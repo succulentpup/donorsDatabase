@@ -1,0 +1,118 @@
+service: donors-simple-service
+#variablesResolutionMode: 20210326
+
+plugins:
+  - serverless-webpack
+  - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: ${opt:profile, 'dolfin'} # ChangeIt
+  region: ${opt:region, 'eu-west-1'} # ChangeIt
+  stage: ${opt:stage, 'dev'}
+  lambdaHashingVersion: ${opt:lambdaHashingVersion, '20201221'}
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1 # useful for performance optimization, ref: http keep alive
+
+custom:
+  env: ${file(./env/${self:provider.stage}.yml)}
+  host: ${self:custom.env.DOMAIN}.${self:custom.env.ROOT_DOMAIN}
+  domain: ${self:custom.host}
+  dynamodb: ${file(./env/dynamodb.env.yml):${self:provider.stage}}
+  package: ${file(./package.json)}
+  serviceNamePrefix: ${self:service}-${self:provider.stage}
+
+  webpack:
+    packager: npm
+    includeModules:
+      forceExclude:
+        - aws-sdk
+
+functions: # add your functions here
+  health:
+    handler: src/health.handler
+    name: ${self:custom.serviceNamePrefix}-sampleGet
+    description: used as base get method template
+    events:
+      - http:
+          method: get
+          cors: true
+          path: health
+  getAllDonationsFromDynamoTable:
+    handler: src/getAllDonationsFromDynamoTable.handler
+    name: ${self:custom.serviceNamePrefix}-getAllDonationsFromDynamoTable
+    description: fetches all donations from DonorsData
+    iamRoleStatementsName: iamrole-${self:functions.getAllDonationsFromDynamoTable.name}
+    environment:
+      TABLE_NAME:
+        Ref: DonorsData
+    events:
+      - http:
+          method: get
+          cors: true
+          path: getAll
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: '#{DonorsData.Arn}'
+  queryDonationsOfUser:
+    handler: src/queryDonationsOfUser.handler
+    name: ${self:custom.serviceNamePrefix}-queryDonationsOfUser
+    iamRoleStatementsName: iamrole-${self:functions.queryDonationsOfUser.name}
+    description: queries donation details of a donor from DonorsData
+    environment:
+      TABLE_NAME:
+        Ref: DonorsData
+    events:
+      - http:
+          method: get
+          cors: true
+          path: query
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: '#{DonorsData.Arn}'
+  addDonation:
+    handler: src/addDonation.handler
+    name: ${self:custom.serviceNamePrefix}-addDonation
+    iamRoleStatementsName: iamrole-${self:functions.addDonation.name}
+    description: adds or updates donation details of a donor in DonorsData
+    environment:
+      TABLE_NAME:
+        Ref: DonorsData
+    events:
+      - http:
+          method: put
+          cors: true
+          path: update
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: '#{DonorsData.Arn}'
+  deleteDonationDetailsOfUser:
+    handler: src/deleteDonationDetailsOfUser.handler
+    name: ${self:custom.serviceNamePrefix}-deleteDonationDetailsOfUser
+    iamRoleStatementsName: iamrole-${self:functions.deleteDonationDetailsOfUser.name}
+    description: deletes donation details of a donor from DonorsData
+    environment:
+      TABLE_NAME:
+        Ref: DonorsData
+    events:
+      - http:
+          method: delete
+          cors: true
+          path: delete
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: '#{DonorsData.Arn}'
+resources:
+  # DynamoDB Tables
+  - ${file(ServiceResources/dynamoDB/DonorsData.yml)}
+  # Output
+  - ${file(ServiceResources/outputs.yml)}
