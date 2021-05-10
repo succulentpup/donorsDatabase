@@ -15,17 +15,17 @@ It assumes that you've aws account and profile is configured in your machine.
 It will build and deploy the lambdas behind an API gateway.
 <br> In the console you can see similar output as following 
 <br>
-endpoints:
+_endpoints_:
 <br>
-GET - https://[domainName]/dev/health
+_GET - https://[domainName]/dev/health_
 <br>
-GET - https://[domainName]/dev/getAll
+_GET - https://[domainName]/dev/getAll_
 <br>
-GET - https://[domainName]/dev/donation/details
+_GET - https://[domainName]/dev/donation/details_
 <br>
-POST - https://[domainName]/dev/donation
+_POST - https://[domainName]/dev/donation_
 <br>
-DELETE - https://[domainName]/dev/delete
+_DELETE - https://[domainName]/dev/delete_
 <br>
 
 Now use the above endpoints to use the app.
