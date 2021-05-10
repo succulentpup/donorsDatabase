@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@dazn/lambda-powertools-logger": "^1.28.1",
+    "@types/got": "^9.6.11",
     "@types/statuses": "^2.0.0",
     "got": "^11.8.2",
     "middy": "^0.36.0",
