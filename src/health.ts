@@ -34,7 +34,6 @@ const inputSchema = {
             properties: {
                 uid: { type: 'number' },
             },
-            // required: ['uid'], // Insert here all required pathParameters
         },
     },
 };
