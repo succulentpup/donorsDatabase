@@ -19,19 +19,15 @@ const { TABLE_NAME } = process.env;
 
 export const queryDonationsOfUser: APIGatewayProxyHandler = async (event, _context) => {
     Log.debug('Dynamo table name', { TABLE_NAME });
-    const { pk, sk } = event.queryStringParameters as { pk: string; sk: string };
+    const { pk } = event.queryStringParameters as { pk: string; sk: string };
     const params = {
         ExpressionAttributeValues: {
             ':pk': pk,
-            ':sk': sk,
         },
         ExpressionAttributeNames: {
             '#pk': 'pk',
-            '#sk': 'sk',
         },
-        KeyConditionExpression: '#pk = :pk and #sk = :sk',
-        ScanIndexForward: false,
-        Limit: 1,
+        KeyConditionExpression: '#pk = :pk',
         TableName: TABLE_NAME!,
     };
     const queryResult = await dynamoDB.query(params).promise();
@@ -53,10 +49,9 @@ const inputSchema = {
         queryStringParameters: {
             type: 'object',
             properties: {
-                pk: { type: 'string', minLength: 1 },
-                sk: { type: 'string', minLength: 1 },
+                pk: { type: 'string', minLength: 3, format: 'email' },
             },
-            required: ['pk', 'sk'],
+            required: ['pk'],
             additionalProperties: false,
         },
     },
