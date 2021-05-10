@@ -41,5 +41,9 @@ The set of test cases in this microservice repo are actually updating the DB.
 <br>
 This is not desirable in real time. Implemented this way just to showcase the usage of JEST framework and test cases.
 
+_NOTE_:
+<br>
+No recursive DB is performed to keep this assignment simple
+
 
 
