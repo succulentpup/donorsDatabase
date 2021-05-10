@@ -33,7 +33,7 @@ functions: # add your functions here
   health:
     handler: src/health.handler
     name: ${self:custom.serviceNamePrefix}-sampleGet
-    description: used as base get method template
+    description: basic heartbeat test kind of endpoint
     events:
       - http:
           method: get
