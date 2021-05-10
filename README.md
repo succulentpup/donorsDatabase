@@ -17,15 +17,15 @@ It will build and deploy the lambdas behind an API gateway.
 <br>
 endpoints:
 <br>
-GET - https://<domainName>/dev/health
+GET - https://[domainName]/dev/health
 <br>
-GET - https://<domainName>/dev/getAll
+GET - https://[domainName]/dev/getAll
 <br>
-GET - https://<domainName>/dev/donation/details
+GET - https://[domainName]/dev/donation/details
 <br>
-POST - https://<domainName>/dev/donation
+POST - https://[domainName]/dev/donation
 <br>
-DELETE - https://<domainName>/dev/delete
+DELETE - https://[domainName]/dev/delete
 <br>
 
 Now use the above endpoints to use the app.
