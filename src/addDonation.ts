@@ -53,7 +53,7 @@ const inputSchema = {
         body: {
             type: 'object',
             properties: {
-                pk: { type: 'string', minLength: 1, format: 'email' },
+                pk: { type: 'string', minLength: 3, format: 'email' },
                 amount: { type: 'integer', minimum: 1 },
             },
             required: ['pk', 'amount'],
