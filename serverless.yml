@@ -8,7 +8,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  profile: ${opt:profile, 'dolfin'} # ChangeIt
+  profile: ${opt:profile, 'yourProfileName'} # ChangeIt
   region: ${opt:region, 'eu-west-1'} # ChangeIt
   stage: ${opt:stage, 'dev'}
   lambdaHashingVersion: ${opt:lambdaHashingVersion, '20201221'}
