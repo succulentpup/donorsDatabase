@@ -92,24 +92,7 @@ functions: # add your functions here
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: '#{DonorsData.Arn}'
-  deleteDonationDetailsOfUser:
-    handler: src/deleteDonationDetailsOfUser.handler
-    name: ${self:custom.serviceNamePrefix}-deleteDonationDetailsOfUser
-    iamRoleStatementsName: iamrole-${self:functions.deleteDonationDetailsOfUser.name}
-    description: deletes donation details of a donor from DonorsData
-    environment:
-      TABLE_NAME:
-        Ref: DonorsData
-    events:
-      - http:
-          method: delete
-          cors: true
-          path: delete
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:DeleteItem
+          - dynamodb:Query
         Resource: '#{DonorsData.Arn}'
 resources:
   # DynamoDB Tables
