@@ -20,32 +20,22 @@ const { TABLE_NAME } = process.env;
 interface Body {
     body: {
         pk: string;
-        sk: string;
-        newAttrib: string;
+        amount: string;
     };
 }
 
-export const addDonation: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent & Body, _context) => {
+export const createItemInDynamoTable: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent & Body, _context) => {
     Log.debug('Dynamo table name', { TABLE_NAME });
-    const { pk, sk, newAttrib } = event.body!;
+    const { pk, amount } = event.body!;
     const params = {
-        Key: { pk, sk },
-        ExpressionAttributeValues: {
-            ':pk': pk,
-            ':sk': sk,
-            ':newAttrib': newAttrib,
+        Item: {
+            pk,
+            date: new Date().toISOString(),
+            amount,
         },
-        ExpressionAttributeNames: {
-            '#pk': 'pk',
-            '#sk': 'sk',
-            '#newAttrib': 'newAttrib',
-        },
-        ConditionExpression: '#pk = :pk and #sk = :sk',
-        UpdateExpression: 'SET #newAttrib = :newAttrib',
         TableName: TABLE_NAME!,
     };
-    const putResult = await dynamoDB.update(params).promise();
-    Log.debug('putResult: ', { putResult });
+    const putResult = await dynamoDB.put(params).promise();
     return ({
         statusCode: status('OK') as number,
         body: JSON.stringify({
@@ -63,17 +53,16 @@ const inputSchema = {
         body: {
             type: 'object',
             properties: {
-                pk: { type: 'string', minLength: 1 },
-                sk: { type: 'string', minLength: 1 },
-                newAttrib: { type: 'string', minLength: 1 },
+                pk: { type: 'string', minLength: 1, format: 'email' },
+                amount: { type: 'integer', minimum: 1 },
             },
-            required: ['pk', 'sk', 'newAttrib'],
+            required: ['pk', 'amount'],
             additionalProperties: false,
         },
     },
 };
 
-export const handler = middy(addDonation)
+export const handler = middy(createItemInDynamoTable)
     .use(httpEventNormalizer()) // Normalizes HTTP events by adding an empty object for queryStringParameters and pathParameters if they are missing.
     .use(httpHeaderNormalizer()) // Normalizes HTTP header names to their canonical format.
     .use(jsonBodyParser()) // Parses the request body to json object

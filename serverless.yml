@@ -79,19 +79,19 @@ functions: # add your functions here
     handler: src/addDonation.handler
     name: ${self:custom.serviceNamePrefix}-addDonation
     iamRoleStatementsName: iamrole-${self:functions.addDonation.name}
-    description: adds or updates donation details of a donor in DonorsData
+    description: adds donation details of a donor
     environment:
       TABLE_NAME:
         Ref: DonorsData
     events:
       - http:
-          method: put
+          method: post
           cors: true
-          path: update
+          path: donation
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItem
+          - dynamodb:PutItem
         Resource: '#{DonorsData.Arn}'
   deleteDonationDetailsOfUser:
     handler: src/deleteDonationDetailsOfUser.handler
