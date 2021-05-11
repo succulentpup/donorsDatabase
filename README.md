@@ -1,5 +1,5 @@
 # donorsDatabase
-This is a microservice that provides CRUD APIs on donors database.
+This is a microservice that provides CRU APIs on donors database.
 <br>
 This microservice has used serverless framework. Ref: https://www.serverless.com/.
 At the high level it can be seen as a wrapper on top of cloudformation.
@@ -26,8 +26,6 @@ _GET - https://[domainName]/dev/getAll_
 _GET - https://[domainName]/dev/donation/details_
 <br>
 _POST - https://[domainName]/dev/donation_
-<br>
-_DELETE - https://[domainName]/dev/delete_
 <br>
 
 Now use the above endpoints to use the app.
