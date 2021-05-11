@@ -66,4 +66,8 @@ The set of test cases in this microservice repo are actually updating the DB.
 <br>
 This is not desirable in real time. Implemented this way just to showcase the usage of JEST framework and test cases.
 
-_NOTE_: No recursive DB is performed to keep this assignment simple
+_NOTE_: 
+<br>
+No recursive DB is performed to keep this assignment simple
+<br>
+If you want to run '$ yarn test', in each request replace the domain name with the correct domain
