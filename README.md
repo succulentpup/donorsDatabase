@@ -1,16 +1,18 @@
 # donorsDatabase
 This is a microservice that provides CRUD APIs on donors database.
-This microservice has used serverless framework. Ref: https://www.serverless.com/ <br>
+<br>
+This microservice has used serverless framework. Ref: https://www.serverless.com/.
 At the high level it can be seen as a wrapper on top of cloudformation.
 
 **How to Run:** <br>
-It assumes that you've aws account and profile is configured in your machine.
-<br>It also assumes node is installed on your machine.
+It assumes that you've aws account and aws profile is configured in your machine.
+<br>It also assumes node runtime is installed on your machine.
 <br>Run the following commands in your terminal. 
 1. $ npm install -g serverless
 2. clone this repo
-3. $ yarn install
-4. yarn deploy:dev --profile <yourAWSProfileName>
+3. Navigate to the repo
+4. $ yarn install
+5. yarn deploy:dev --profile [yourAWSProfileName]
 
 It will build and deploy the lambdas behind an API gateway.
 <br> In the console you can see similar output as following 
@@ -29,6 +31,29 @@ _DELETE - https://[domainName]/dev/delete_
 <br>
 
 Now use the above endpoints to use the app.
+<br>
+In the below example, I've used curl but any REST client can be used, for eg: postman, insomnia etc...
+<br>
+Call the below endpoint twice. Replace the domainName with the actual domain name and also use any suitable working phone number.
+From the 2nd call, you'll receive the sms on the given phone number.
+<br>
+In realtime it may not be that affective to receive sms for each donation. This can be handled by understanding the business logic.
+<br>
+<br>
+$ curl --request POST \
+  --url https://[domainName]/dev/donation \
+  --header 'content-type: application/json' \
+  --data '{
+	"pk": "+441234567890",
+	"amount": 1
+}
+'
+<br>
+<br>
+**NOTE:** after your testing run the following command to remove the stack and the associated resources. Its a clean up activity.
+<br>
+$ sls --profile [profile] remove
+
 Input validation of endpoints is done through middy middleware. It can be done at the API Gateway as well & that could save some money by rejecting the bad requests there itself.
 In real time, number of bad requests can be expected to be less unless there is a DOS/DDOS.
 <br>
@@ -41,9 +66,4 @@ The set of test cases in this microservice repo are actually updating the DB.
 <br>
 This is not desirable in real time. Implemented this way just to showcase the usage of JEST framework and test cases.
 
-_NOTE_:
-<br>
-No recursive DB is performed to keep this assignment simple
-
-
-
+_NOTE_: No recursive DB is performed to keep this assignment simple
