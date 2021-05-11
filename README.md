@@ -48,7 +48,7 @@ $ curl --request POST \
 '
 <br>
 <br>
-**NOTE:** after your testing run the following command to remove the stack and the associated resources. Its a clean up activity.
+**NOTE:** after your testing is done, run the following command to remove the stack and the associated resources. It's a clean up activity.
 <br>
 $ sls --profile [profile] remove
 
