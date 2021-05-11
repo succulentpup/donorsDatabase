@@ -17,6 +17,12 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 const WHITE_SPACES = 2;
 const { TABLE_NAME } = process.env;
 
+/**
+ * @desc get all donation details found in the DB. Note: Its not recursive, kept it simple for this exercise
+ *          triggers on http event
+ * @param event
+ * @param _context
+ */
 export const getAllDonationsFromDynamoTable: APIGatewayProxyHandler = async (event, _context) => {
     Log.debug('Dynamo Table name', { TABLE_NAME });
     const params = {

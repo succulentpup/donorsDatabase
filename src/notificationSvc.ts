@@ -10,6 +10,11 @@ interface SnsMessageType {
     phoneNumber: string;
 }
 
+/**
+ * @desc sends sms to valid phone numbers
+ *          triggers on sns event
+ * @param event
+ */
 export const notificationSvc: SNSHandler =  async (event) => {
     Log.debug('event: ', { event });
     // tslint:disable-next-line:ban-ts-ignore

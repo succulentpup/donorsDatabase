@@ -12,6 +12,13 @@ import {
 import status from 'statuses';
 
 const WHITE_SPACES = 2;
+
+/**
+ * @desc heart beat kind of REST endpoint
+ *          triggers on http event
+ * @param event
+ * @param _context
+ */
 export const health: APIGatewayProxyHandler = async (event, _context) => {
     Log.info('Add your implementation here');
     return ({

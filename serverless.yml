@@ -116,7 +116,7 @@ functions: # add your functions here
       - Effect: Allow
         Action:
           - sns:Publish
-        Resource: '*'
+        Resource: '*' # It can be more restricted, kept it * for this exercise
 
 resources:
   # DynamoDB Tables

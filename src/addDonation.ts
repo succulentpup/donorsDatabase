@@ -30,6 +30,12 @@ interface Body {
     };
 }
 
+/**
+ * @desc adds a new item to dynamoDB table also sends an SNS notification to DonorsTopic
+ *          triggers on http event
+ * @param event
+ * @param _context
+ */
 export const addDonation: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent & Body, _context) => {
     Log.debug('Dynamo table name', { TABLE_NAME });
     Log.debug('SNS topic name', { SNS_TOPIC_DONATION_ARN });
