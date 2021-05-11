@@ -83,6 +83,8 @@ functions: # add your functions here
     environment:
       TABLE_NAME:
         Ref: DonorsData
+      SNS_TOPIC_DONATION_ARN:
+        Ref: DonationTopic
     events:
       - http:
           method: post
@@ -94,8 +96,32 @@ functions: # add your functions here
           - dynamodb:PutItem
           - dynamodb:Query
         Resource: '#{DonorsData.Arn}'
+      - Effect: Allow
+        Action:
+          - sns:Publish
+        Resource: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:DonationTopic-${self:provider.stage}
+  notificationSvc:
+    handler: src/notificationSvc.handler
+    name: ${self:custom.serviceNamePrefix}-notificationSvc
+    iamRoleStatementsName: iamrole-${self:functions.notificationSvc.name}
+    description: sends notifications
+    environment:
+      SNS_TOPIC_DONATION_ARN:
+        Ref: DonationTopic
+    events:
+      - sns:
+          arn: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:DonationTopic-${self:provider.stage}
+          topicName: DonationTopic
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - sns:Publish
+        Resource: '*'
+
 resources:
   # DynamoDB Tables
   - ${file(ServiceResources/dynamoDB/DonorsData.yml)}
+  # SNS topic DonationTopic
+  - ${file(ServiceResources/sns/DonationTopic.yml)}
   # Output
   - ${file(ServiceResources/outputs.yml)}

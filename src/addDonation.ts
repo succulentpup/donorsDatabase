@@ -14,8 +14,14 @@ import {
 import status from 'statuses';
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const sns = new AWS.SNS();
 const WHITE_SPACES = 2;
-const { TABLE_NAME } = process.env;
+const {
+    // tslint:disable-next-line:no-magic-numbers
+    NOTIFICATION_SIZE = 2,
+    SNS_TOPIC_DONATION_ARN,
+    TABLE_NAME,
+} = process.env;
 
 interface Body {
     body: {
@@ -24,8 +30,9 @@ interface Body {
     };
 }
 
-export const createItemInDynamoTable: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent & Body, _context) => {
+export const addDonation: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent & Body, _context) => {
     Log.debug('Dynamo table name', { TABLE_NAME });
+    Log.debug('SNS topic name', { SNS_TOPIC_DONATION_ARN });
     const { pk, amount } = event.body!;
     const params = {
         Item: {
@@ -35,11 +42,39 @@ export const createItemInDynamoTable: APIGatewayProxyHandler = async (event: API
         },
         TableName: TABLE_NAME!,
     };
-    const putResult = await dynamoDB.put(params).promise();
+    await dynamoDB.put(params).promise();
+    const queryParams = {
+        ExpressionAttributeValues: {
+            ':pk': pk,
+        },
+        ExpressionAttributeNames: {
+            '#pk': 'pk',
+        },
+        KeyConditionExpression: '#pk = :pk',
+        TableName: TABLE_NAME!,
+    };
+    const queryResult = await dynamoDB.query(queryParams).promise();
+    if (queryResult.Count! >= NOTIFICATION_SIZE) {
+        // publish to the notification service
+        // in this exercise we've just sending it another lambda in the same service
+        // in reality I would like to have a dedicated service to take care of notifications
+        // notification service can have dedicated email, sms, push notification templates etc..,
+        Log.info('Sending a thank you note');
+        const snsParams = {
+            Message: JSON.stringify({
+                displayText: `Thanks a lot for your helping hand`,
+                phoneNumber: pk,
+            }),
+            TopicArn: SNS_TOPIC_DONATION_ARN,
+        };
+        const snsPublishResult = await sns.publish(snsParams).promise();
+        Log.debug('snsPublishResult', { snsPublishResult });
+    }
+
     return ({
         statusCode: status('OK') as number,
         body: JSON.stringify({
-            message: JSON.stringify(putResult),
+            message: 'Thanks for the donation',
         }, null, WHITE_SPACES),
     });
 };
@@ -53,7 +88,7 @@ const inputSchema = {
         body: {
             type: 'object',
             properties: {
-                pk: { type: 'string', minLength: 3, format: 'email' },
+                pk: { type: 'string', minLength: 10, pattern: '^\\+?[1-9]\\d{1,14}$' }, // this pattern can be improved
                 amount: { type: 'integer', minimum: 1 },
             },
             required: ['pk', 'amount'],
@@ -62,7 +97,7 @@ const inputSchema = {
     },
 };
 
-export const handler = middy(createItemInDynamoTable)
+export const handler = middy(addDonation)
     .use(httpEventNormalizer()) // Normalizes HTTP events by adding an empty object for queryStringParameters and pathParameters if they are missing.
     .use(httpHeaderNormalizer()) // Normalizes HTTP header names to their canonical format.
     .use(jsonBodyParser()) // Parses the request body to json object

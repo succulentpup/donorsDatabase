@@ -1,0 +1,12 @@
+Resources:
+  DonationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: 'dedicated to notifications based on donations'
+      TopicName: DonationTopic-${self:provider.stage}
+
+Outputs:
+  DonationTopic:
+    Description: SNS topic - dedicated to notifications based on donations'
+    Value:
+      Ref: DonationTopic

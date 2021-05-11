@@ -3,7 +3,7 @@ import got from 'got';
 
 describe('Health end point functionality', () => {
     it('should return success response', async () => {
-        const { body: { message } } = (await got('https://q0h298vynh.execute-api.eu-west-1.amazonaws.com/dev/donation/details?pk=user@eg.com', {
+        const { body: { message } } = (await got('https://o9r5ukjms5.execute-api.eu-west-1.amazonaws.com/dev/donation/details?pk=user@eg.com', {
             responseType: 'json',
         })) as { body: { message: string } };
         // below log is not needed in reality
@@ -15,7 +15,7 @@ describe('Health end point functionality', () => {
 describe('Health end point functionality', () => {
     it('should return 400 response', async () => { // queryString param pk is mandatory
         try {
-            const { body: { message } } = (await got('https://q0h298vynh.execute-api.eu-west-1.amazonaws.com/dev/donation/details', {
+            const { body: { message } } = (await got('https://o9r5ukjms5.execute-api.eu-west-1.amazonaws.com/dev/donation/details', {
                 responseType: 'json',
             })) as { body: { message: string } };
             // below log is not needed in reality
@@ -30,7 +30,7 @@ describe('Health end point functionality', () => {
 describe('Health end point functionality', () => {
     it('should return 400 response', async () => { // queryString param pk is not in email format
         try {
-            const { body: { message } } = (await got('https://q0h298vynh.execute-api.eu-west-1.amazonaws.com/dev/donation/details?pk=abc', {
+            const { body: { message } } = (await got('https://o9r5ukjms5.execute-api.eu-west-1.amazonaws.com/dev/donation/details?pk=abc', {
                 responseType: 'json',
             })) as { body: { message: string } };
             // below log is not needed in reality
