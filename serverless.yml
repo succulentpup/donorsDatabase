@@ -5,6 +5,9 @@ plugins:
   - serverless-webpack
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-certificate-creator
+  - serverless-domain-manager
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -22,6 +25,24 @@ custom:
   dynamodb: ${file(./env/dynamodb.env.yml):${self:provider.stage}}
   package: ${file(./package.json)}
   serviceNamePrefix: ${self:service}-${self:provider.stage}
+  customCertificate:
+    certificateName: ${self:custom.domain}
+    hostedZoneNames: '${self:custom.host}.'
+    region: ${self:provider.region}
+    tags:
+      Name: ${self:custom.domain}
+      Environment: ${self:provider.stage}
+  customDomain:
+    domainName: ${self:custom.domain}
+    certificateName: ${self:custom.domain}
+    stage: ${self:provider.stage}
+    basePath: donars-service/api
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    apiType: rest
+    autoDomain: false
+
 
   webpack:
     packager: npm

@@ -1,5 +1,5 @@
-ROOT_DOMAIN: co
-DOMAIN: serverlesshub
+ROOT_DOMAIN: in
+DOMAIN: aspirex
 SUBDOMAIN: api
 DEBUG: true
 TRACE: true
