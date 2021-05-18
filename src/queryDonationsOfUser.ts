@@ -49,7 +49,7 @@ const inputSchema = {
         queryStringParameters: {
             type: 'object',
             properties: {
-                pk: { type: 'string', minLength: 3, format: 'email' },
+                pk: { type: 'string', minLength: 10, pattern: '^\\+?[1-9]\\d{1,14}$' }, // this pattern can be improved
             },
             required: ['pk'],
             additionalProperties: false,
