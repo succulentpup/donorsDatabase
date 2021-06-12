@@ -1,7 +1,7 @@
 # donorsDatabase
 This is a microservice that provides CRU APIs on donors database.
 <br>
-This microservice has used serverless framework. Ref: https://www.serverless.com/.
+This microservice used serverless framework. Ref: https://www.serverless.com/.
 At the high level it can be seen as a wrapper on top of cloudformation.
 
 **How to Run:** <br>
